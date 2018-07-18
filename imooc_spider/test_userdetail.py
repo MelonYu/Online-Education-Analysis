@@ -72,7 +72,7 @@ for user_id in range(FIRST_USER, LAST_USER):
     for k in user_info.keys():
         print('%s:%s' % (k, user_info[k]))
 
-    for page_id in range(1, page_num):
+    for page_id in range(1, 2):
         url = base_url + str(user_id) + page_url + str(page_id)
         print(url)
         res = requests.get(url, headers=headers)
@@ -82,8 +82,12 @@ for user_id in range(FIRST_USER, LAST_USER):
         html_doc = res.text
         # print(html_doc)
         soup = BeautifulSoup(html_doc, 'html.parser', from_encoding='utf-8')
+        first_course = soup.find("div", class_="clearfix tl-item tl-item-first")
         course_list = soup.find_all("div", class_="clearfix tl-item ")
+
+        course_list.insert(0, first_course)
         for course in course_list:
+         #   print(course)
             study_time = course.find('span').get_text().strip()
             year, date = study_time.split('\n')
 
@@ -94,9 +98,25 @@ for user_id in range(FIRST_USER, LAST_USER):
                 h3 = cha.find('h3', class_='study-hd').find('a')
                 pro['course_name'] = h3.get_text()
                 pro['course_id'] = h3['href']
+
+                # h3 = cha.find('h3', class_='study-hd').find('a')
+                # pro['course_name'] = h3.get_text()
+                # pro['course_id'] = h3['href']
+
+                study_points = cha.find('div', class_='study-points').contents
+                pro['has_learn'] = study_points[1].get_text()[2:]
+                pro['time_consuming'] = study_points[3].get_text()
+                pro['study_to'] = study_points[5].get_text()
+
+                catog_points = cha.find('div', class_='catog-points').contents
+                pro['note_num'] = catog_points[1].get_text()[3:]
+                pro['code_num'] = catog_points[3].get_text()[3:]
+                pro['ques_num'] = catog_points[5].get_text()[3:]
+
                 for k in pro.keys():
                     print('%s:%s' % (k, pro[k]))
                 print('\n')
+
 
 # if __name__ == '__main__':
 #     pass
