@@ -40,7 +40,7 @@ for course_id in range(85, 86):
     # for course in course_list:
     #     print course
     course_detail = {}
-    path_detail = soup.find('div', class_='path').get_text().strip()
+    path_detail = soup.find('div', class_='path').get_text().strip().replace('\n', '')
     course_tip = soup.find_all("dd")
     course_tip_first = course_tip[0].get_text()
     course_tip_second = course_tip[1].get_text().strip()
@@ -54,9 +54,6 @@ for course_id in range(85, 86):
     menu_pp = soup.find("ul", class_="course-menu").find_all("span")
     comment_pp = menu_pp[0].get_text()
     score_pp = menu_pp[1].get_text()
-
-    # course_detail['']
-
 
     print(path_detail)
     print(course_tip_first)
